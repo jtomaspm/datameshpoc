@@ -1,0 +1,27 @@
+
+volumes:
+  postgres_data: {}
+
+services:
+  person-system-api:
+    build:
+      dockerfile: dockerfile
+      context: ./person-system-api
+    ports:
+      - '8081:8080'
+
+  datafeed-process-service:
+    build:
+      dockerfile: dockerfile
+      context: ./datafeed-process-service
+
+  postgres:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=P0stgr3sP4ssw0rd
+    ports:
+      - '5432:5432'
+  
+  
