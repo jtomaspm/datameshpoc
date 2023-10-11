@@ -30,11 +30,13 @@ func (f *PersonFeeder) Feed(wg *sync.WaitGroup) {
 			continue
 		}
 		resp, err := http.Post(f.url, "application/json", bytes.NewBuffer(body))
-		log.Println(resp)
 		if err != nil {
 			log.Println(err)
 			continue
 		}
+		defer resp.Body.Close()
+		log.Println(resp.StatusCode)
+		log.Println(resp.Body)
 	}
 	wg.Done()
 }

@@ -3,7 +3,11 @@ package connector
 import (
 	"database/sql"
 	"fmt"
+
+	_ "github.com/lib/pq"
 )
+
+var db *sql.DB
 
 type Config struct {
 	Host     string
@@ -15,7 +19,6 @@ type Config struct {
 
 type Connector struct {
 	config *Config
-	db     *sql.DB
 }
 
 func New(config *Config) *Connector {
@@ -25,15 +28,17 @@ func New(config *Config) *Connector {
 	return c
 }
 
-func (c *Connector) Setup() {
-	connStr := fmt.Sprintf("postgres://postgres:%v@%v/%v?sslmode=disable", c.config.Password, c.config.Host, c.config.Database)
-	db, err := sql.Open("postgres", connStr)
-	if err != nil {
-		panic(err)
-	}
-	c.db = db
+func (c *Connector) connectionString() string {
+	return fmt.Sprintf("postgres://postgres:%v@%v/%v?sslmode=disable", c.config.Password, c.config.Host, c.config.Database)
 }
 
 func (c *Connector) Db() *sql.DB {
-	return c.db
+	if db == nil {
+		var err error
+		db, err = sql.Open("postgres", c.connectionString())
+		if err != nil {
+			panic(err)
+		}
+	}
+	return db
 }

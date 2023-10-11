@@ -9,8 +9,8 @@ import (
 )
 
 func main() {
-	log.Println("Starting datafeed-process-service in 60 seconds...")
-	time.Sleep(60 * time.Second)
+	log.Println("Starting datafeed-process-service in 15 seconds...")
+	time.Sleep(15 * time.Second)
 	feeders := []feeder.Feeder{
 		feeder.NewPersonFeeder("http://person-system-api:8080/api/person"),
 	}

@@ -26,7 +26,7 @@ func New() *DbContext {
 
 func (c *DbContext) CreatePerson(person model.Person) (uuid.UUID, error) {
 	id := uuid.New()
-	q := "INSERT INTO Person (id, firstName, lastName, email, birthDate) VALUES ($1, $2, $3, $4, $5)"
+	q := "INSERT INTO public.persons (id, \"firstName\", \"lastName\", email, \"birthDate\") VALUES ($1, $2, $3, $4, $5)"
 	_, err := c.connector.Db().Exec(q, id.String(), person.FirstName, person.LastName, person.Email, person.BirthDate)
 	if err != nil {
 		return [16]byte{}, err
@@ -35,7 +35,7 @@ func (c *DbContext) CreatePerson(person model.Person) (uuid.UUID, error) {
 }
 
 func (c *DbContext) GetPerson(id uuid.UUID) (model.Person, error) {
-	q := "SELECT * FROM Person WHERE id = $1"
+	q := "SELECT * FROM public.persons WHERE id = $1"
 	r, err := c.connector.Db().Query(q, id.String())
 	if err != nil {
 		return model.Person{}, err
@@ -47,13 +47,9 @@ func (c *DbContext) GetPerson(id uuid.UUID) (model.Person, error) {
 		firstName string
 		lastName  string
 		email     string
-		birthDate string
+		birthDate time.Time
 	)
 	err = r.Scan(&idStr, &firstName, &lastName, &email, &birthDate)
-	if err != nil {
-		return model.Person{}, err
-	}
-	date, err := time.Parse("yyyy-MM-dd", birthDate)
 	if err != nil {
 		return model.Person{}, err
 	}
@@ -62,7 +58,7 @@ func (c *DbContext) GetPerson(id uuid.UUID) (model.Person, error) {
 		FirstName: firstName,
 		LastName:  lastName,
 		Email:     email,
-		BirthDate: date,
+		BirthDate: birthDate,
 	}, nil
 }
 
@@ -72,8 +68,4 @@ func (c *DbContext) GetPersons() (model.Person, error) {
 
 func (c *DbContext) Close() {
 	c.connector.Db().Close()
-}
-
-func (c *DbContext) Open() {
-	c.connector.Setup()
 }

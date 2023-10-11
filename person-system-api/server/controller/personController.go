@@ -34,22 +34,21 @@ func (c *PersonController) CreatePerson(ctx *gin.Context) {
 	var person model.Person
 	err := ctx.BindJSON(&person)
 	if err != nil {
+		log.Println(err)
 		ctx.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 	log.Println(person)
-	c.dbCtx.Open()
 	id, err := c.dbCtx.CreatePerson(person)
 	if err != nil {
+		log.Println(err)
 		ctx.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
-	c.dbCtx.Close()
 	ctx.JSON(200, gin.H{"id": id})
 }
 
 func (c *PersonController) GetPerson(ctx *gin.Context) {
-	c.dbCtx.Open()
 	idu, err := uuid.Parse(ctx.Param("id"))
 	if err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
@@ -60,7 +59,6 @@ func (c *PersonController) GetPerson(ctx *gin.Context) {
 		ctx.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
-	c.dbCtx.Close()
 	ctx.JSON(200, gin.H{"person": person})
 }
 
