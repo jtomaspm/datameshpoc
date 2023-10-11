@@ -43,7 +43,7 @@ func NewPerson() *Person {
 
 	var data map[string]string
 	err = json.NewDecoder(resp.Body).Decode(&data)
-	if err != nil {
+	if err != nil || resp.StatusCode != 200 {
 		return handlePersonErr(err)
 	}
 	log.Println(data)

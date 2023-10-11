@@ -1,9 +1,12 @@
 
 volumes:
   postgres_data: {}
+  logsFTP_data: {}
+  redis_data: {}
 
 services:
   person-system-api:
+    restart: always
     build:
       dockerfile: dockerfile
       context: ./person-system-api
@@ -11,6 +14,7 @@ services:
       - '8081:8080'
 
   datafeed-process-service:
+    restart: always
     build:
       dockerfile: dockerfile
       context: ./datafeed-process-service
@@ -23,5 +27,26 @@ services:
       - POSTGRES_PASSWORD=P0stgr3sP4ssw0rd
     ports:
       - '5432:5432'
+
+  logsFTP:
+    image: delfer/alpine-ftp-server
+    restart: always
+    ports:
+      - '21:21'
+      - '21000-21010:21000-21010'
+    volumes:
+      - logsFTP_data:/ftp/admin
+    environment:
+      - USERS=admin|1234
   
+  redis:
+    image: redis/redis-stack:latest
+    restart: always
+    ports:
+      - '6379:6379'
+      - '8001:8001'
+    volumes:
+      - redis_data:/data
+    environment:
+      - REDIS_ARGS="--requirepass 1234"
   
