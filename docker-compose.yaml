@@ -12,6 +12,10 @@ services:
       context: ./person-system-api
     ports:
       - '8081:8080'
+    depends_on:
+      - postgres
+      - redis
+      - logs-process-api
 
   log-process-api:
     restart: always
@@ -20,6 +24,9 @@ services:
       context: ./log-process-api
     ports:
       - '8082:8080'
+    depends_on:
+      - logsFTP
+      - redis
 
   client-system-api:
     restart: always
@@ -28,12 +35,19 @@ services:
       context: ./client-system-api
     ports:
       - '8083:8080'
+    depends_on:
+      - postgres
+      - redis
+      - logs-process-api
 
   datafeed-process-service:
     restart: always
     build:
       dockerfile: dockerfile
       context: ./datafeed-process-service
+    depends_on:
+      - client-system-api
+      - person-system-api
 
   postgres:
     image: postgres:14.1-alpine
