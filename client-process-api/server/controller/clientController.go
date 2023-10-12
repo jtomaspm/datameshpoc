@@ -111,7 +111,7 @@ func (c *ClientController) CreateClient(ctx *gin.Context) {
 	} else {
 		l.Log(message.Info("Client created", string(save)))
 	}
-	ctx.JSON(200, gin.H{"id": id})
+	ctx.JSON(200, gin.H{"id": clientId})
 }
 
 func (c *ClientController) GetClient(ctx *gin.Context) {
