@@ -44,7 +44,7 @@ func (c *DbContext) MakeMigrations() error {
 
 func (c *DbContext) CreateClient(client model.Client) (uuid.UUID, error) {
 	id := uuid.New()
-	q := "INSERT INTO public.clients (id, \"personId\", \"creationdate\" VALUES ($1, $2, $3)"
+	q := "INSERT INTO public.clients (id, \"personId\", \"creationDate\") VALUES ($1, $2, $3)"
 	_, err := c.connector.Db().Exec(q, id.String(), client.PersonId, time.Now())
 	if err != nil {
 		return [16]byte{}, err
@@ -78,8 +78,32 @@ func (c *DbContext) GetClient(id uuid.UUID) (model.Client, error) {
 	return person, nil
 }
 
-func (c *DbContext) GetClients() (model.Client, error) {
-	return model.Client{}, nil
+func (c *DbContext) GetClients() ([]model.Client, error) {
+	q := "SELECT * FROM public.clients"
+	r, err := c.connector.Db().Query(q)
+	if err != nil {
+		return []model.Client{}, err
+	}
+	defer r.Close()
+	res := []model.Client{}
+	for r.Next() {
+		var (
+			idStr        string
+			personIdStr  string
+			creationDate time.Time
+		)
+		err = r.Scan(&idStr, &personIdStr, &creationDate)
+		if err != nil {
+			return []model.Client{}, err
+		}
+		c := model.Client{
+			Id:           uuid.MustParse(idStr),
+			PersonId:     uuid.MustParse(personIdStr),
+			CreationDate: creationDate,
+		}
+		res = append(res, c)
+	}
+	return res, nil
 }
 
 func (c *DbContext) Close() {

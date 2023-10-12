@@ -4,3 +4,4 @@ use ./datafeed-process-service
 use ./person-system-api
 use ./log-process-api
 use ./client-system-api
+use ./client-process-api

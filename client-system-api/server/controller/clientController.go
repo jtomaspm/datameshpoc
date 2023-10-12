@@ -2,6 +2,7 @@ package controller
 
 import (
 	"log"
+	"net/http"
 
 	"datamesh.poc/client-system-api/dal/context"
 	"datamesh.poc/client-system-api/dal/model"
@@ -42,6 +43,18 @@ func (c *ClientController) CreateClient(ctx *gin.Context) {
 		return
 	}
 	log.Println(client)
+	r, err := http.Get("http://person-system-api:8080/api/person/" + client.PersonId.String())
+	if err != nil {
+		log.Println(err)
+		ctx.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+	defer r.Body.Close()
+	if r.StatusCode != 200 {
+		log.Println("Person not found")
+		ctx.JSON(400, gin.H{"error": "Person not found"})
+		return
+	}
 	id, err := c.dbCtx.CreateClient(client)
 	if err != nil {
 		log.Println(err)
@@ -62,9 +75,14 @@ func (c *ClientController) GetClient(ctx *gin.Context) {
 		ctx.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.JSON(200, gin.H{"client": client})
+	ctx.JSON(200, client)
 }
 
 func (c *ClientController) GetClients(ctx *gin.Context) {
-
+	res, err := c.dbCtx.GetClients()
+	if err != nil {
+		ctx.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(200, res)
 }

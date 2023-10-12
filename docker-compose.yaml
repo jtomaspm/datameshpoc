@@ -39,6 +39,19 @@ services:
       - postgres
       - redis
       - log-process-api
+      - person-system-api
+
+  client-process-api:
+    restart: always
+    build:
+      dockerfile: dockerfile
+      context: ./client-process-api
+    ports:
+      - '8084:8080'
+    depends_on:
+      - client-system-api
+      - person-system-api
+      - log-process-api
 
   datafeed-process-service:
     restart: always

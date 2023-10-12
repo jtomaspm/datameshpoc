@@ -2,6 +2,8 @@
 
 ## Todo
 
- - [ ] Check if personId is valid before creating client
+ - [x] Check if personId is valid before creating client
  - [x] Enable migrations
+ - [ ] Finish client-process-api
+ - [ ] Make client-data-feed
 
