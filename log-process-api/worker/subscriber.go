@@ -46,5 +46,4 @@ func (s *Subscriber) Run(wg *sync.WaitGroup) {
 			continue
 		}
 	}
-	wg.Done()
 }
