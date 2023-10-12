@@ -19,6 +19,10 @@ func New(router *gin.Engine) *PersonController {
 		router: router,
 		dbCtx:  context.New(),
 	}
+	err := c.dbCtx.MakeMigrations()
+	if err != nil {
+		log.Println(err)
+	}
 	c.Setup()
 	return c
 }

@@ -15,7 +15,7 @@ services:
     depends_on:
       - postgres
       - redis
-      - logs-process-api
+      - log-process-api
 
   log-process-api:
     restart: always
@@ -38,7 +38,7 @@ services:
     depends_on:
       - postgres
       - redis
-      - logs-process-api
+      - log-process-api
 
   datafeed-process-service:
     restart: always

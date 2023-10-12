@@ -1,6 +1,7 @@
 package context
 
 import (
+	"os"
 	"time"
 
 	"datamesh.poc/client-system-api/dal/connector"
@@ -26,6 +27,19 @@ func New() *DbContext {
 		}),
 		logger: logger.New(),
 	}
+}
+
+func (c *DbContext) MakeMigrations() error {
+	f, err := os.ReadFile("./dal/migrations/initial.sql")
+	if err != nil {
+		return err
+	}
+	q := string(f)
+	_, err = c.connector.Db().Exec(q)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (c *DbContext) CreateClient(client model.Client) (uuid.UUID, error) {
