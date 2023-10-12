@@ -31,7 +31,7 @@ func New() *DbContext {
 func (c *DbContext) CreateClient(client model.Client) (uuid.UUID, error) {
 	id := uuid.New()
 	q := "INSERT INTO public.clients (id, \"personId\", \"creationdate\" VALUES ($1, $2, $3)"
-	_, err := c.connector.Db().Exec(q, id.String(), client.PersonId, client.CreationDate)
+	_, err := c.connector.Db().Exec(q, id.String(), client.PersonId, time.Now())
 	if err != nil {
 		return [16]byte{}, err
 	}
