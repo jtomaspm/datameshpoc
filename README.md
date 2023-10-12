@@ -3,5 +3,5 @@
 ## Todo
 
  - [ ] Check if personId is valid before creating client
- - [ ] Enable migrations
+ - [x] Enable migrations
 

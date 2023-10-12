@@ -82,8 +82,36 @@ func (c *DbContext) GetPerson(id uuid.UUID) (model.Person, error) {
 	return person, nil
 }
 
-func (c *DbContext) GetPersons() (model.Person, error) {
-	return model.Person{}, nil
+func (c *DbContext) GetPersons() ([]model.Person, error) {
+	q := "SELECT * FROM public.persons"
+	r, err := c.connector.Db().Query(q)
+	if err != nil {
+		return []model.Person{}, err
+	}
+	defer r.Close()
+	persons := []model.Person{}
+	for r.Next() {
+		var (
+			idStr     string
+			firstName string
+			lastName  string
+			email     string
+			birthDate time.Time
+		)
+		err = r.Scan(&idStr, &firstName, &lastName, &email, &birthDate)
+		if err != nil {
+			return []model.Person{}, err
+		}
+		person := model.Person{
+			Id:        uuid.MustParse(idStr),
+			FirstName: firstName,
+			LastName:  lastName,
+			Email:     email,
+			BirthDate: birthDate,
+		}
+		persons = append(persons, person)
+	}
+	return persons, nil
 }
 
 func (c *DbContext) Close() {

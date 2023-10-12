@@ -62,9 +62,14 @@ func (c *PersonController) GetPerson(ctx *gin.Context) {
 		ctx.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.JSON(200, gin.H{"person": person})
+	ctx.JSON(200, person)
 }
 
 func (c *PersonController) GetPersons(ctx *gin.Context) {
-
+	res, err := c.dbCtx.GetPersons()
+	if err != nil {
+		ctx.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(200, res)
 }
