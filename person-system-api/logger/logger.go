@@ -22,7 +22,7 @@ func New() *Logger {
 	return l
 }
 
-func (l *Logger) Log(message message.Message) error {
+func (l *Logger) Log(message *message.Message) error {
 	ctx := context.Background()
 	content, err := message.Json()
 	if err != nil {

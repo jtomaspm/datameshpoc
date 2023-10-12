@@ -13,6 +13,14 @@ services:
     ports:
       - '8081:8080'
 
+  log-process-api:
+    restart: always
+    build:
+      dockerfile: dockerfile
+      context: ./log-process-api
+    ports:
+      - '8082:8080'
+
   datafeed-process-service:
     restart: always
     build:

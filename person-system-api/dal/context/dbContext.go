@@ -5,11 +5,14 @@ import (
 
 	"datamesh.poc/person-system-api/dal/connector"
 	"datamesh.poc/person-system-api/dal/model"
+	"datamesh.poc/person-system-api/logger"
+	"datamesh.poc/person-system-api/logger/message"
 	"github.com/google/uuid"
 )
 
 type DbContext struct {
 	connector *connector.Connector
+	logger    *logger.Logger
 }
 
 func New() *DbContext {
@@ -21,6 +24,7 @@ func New() *DbContext {
 			Password: "P0stgr3sP4ssw0rd",
 			Database: "PersonDB",
 		}),
+		logger: logger.New(),
 	}
 }
 
@@ -31,6 +35,7 @@ func (c *DbContext) CreatePerson(person model.Person) (uuid.UUID, error) {
 	if err != nil {
 		return [16]byte{}, err
 	}
+	c.logger.Log(message.Info("Person created", id.String()))
 	return id, nil
 }
 
@@ -53,13 +58,14 @@ func (c *DbContext) GetPerson(id uuid.UUID) (model.Person, error) {
 	if err != nil {
 		return model.Person{}, err
 	}
-	return model.Person{
+	person := model.Person{
 		Id:        uuid.MustParse(idStr),
 		FirstName: firstName,
 		LastName:  lastName,
 		Email:     email,
 		BirthDate: birthDate,
-	}, nil
+	}
+	return person, nil
 }
 
 func (c *DbContext) GetPersons() (model.Person, error) {

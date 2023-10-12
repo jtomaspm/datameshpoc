@@ -24,7 +24,6 @@ func New(router *gin.Engine) *PersonController {
 }
 
 func (c *PersonController) Setup() {
-	// c.router.GET("/person", c.GetPerson)
 	c.router.POST("/api/person", c.CreatePerson)
 	c.router.GET("/api/person/:id", c.GetPerson)
 	c.router.GET("/api/person", c.GetPersons)
