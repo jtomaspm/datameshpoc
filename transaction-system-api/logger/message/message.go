@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-const domain = "card-system-api"
+const domain = "transaction-system-api"
 
 type Message struct {
 	TimeStamp time.Time `json:"timestamp"`

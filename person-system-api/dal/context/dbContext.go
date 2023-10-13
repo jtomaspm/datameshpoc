@@ -19,7 +19,7 @@ type DbContext struct {
 func New() *DbContext {
 	return &DbContext{
 		connector: connector.New(&connector.Config{
-			Host:     "192.168.1.124",
+			Host:     "postgres",
 			Port:     "5432",
 			User:     "postgres",
 			Password: "P0stgr3sP4ssw0rd",

@@ -19,7 +19,7 @@ type DbContext struct {
 func New() *DbContext {
 	return &DbContext{
 		connector: connector.New(&connector.Config{
-			Host:     "192.168.1.124",
+			Host:     "postgres",
 			Port:     "5432",
 			User:     "postgres",
 			Password: "P0stgr3sP4ssw0rd",
@@ -44,7 +44,7 @@ func (c *DbContext) MakeMigrations() error {
 
 func (c *DbContext) CreateCard(card model.Card) (uuid.UUID, error) {
 	id := uuid.New()
-	q := "INSERT INTO public.cards (id, \"personId\", \"cardNumber\", \"creationDate\") VALUES ($1, $2, $3, $4)"
+	q := "INSERT INTO public.cards (id, \"clientId\", \"cardNumber\", \"creationDate\") VALUES ($1, $2, $3, $4)"
 	_, err := c.connector.Db().Exec(q, id.String(), card.ClientId, card.CardNumber, time.Now())
 	if err != nil {
 		return [16]byte{}, err

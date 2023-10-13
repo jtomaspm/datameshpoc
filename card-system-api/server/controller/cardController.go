@@ -10,13 +10,13 @@ import (
 	"github.com/google/uuid"
 )
 
-type ClientController struct {
+type CardController struct {
 	router *gin.Engine
 	dbCtx  *context.DbContext
 }
 
-func New(router *gin.Engine) *ClientController {
-	c := &ClientController{
+func New(router *gin.Engine) *CardController {
+	c := &CardController{
 		router: router,
 		dbCtx:  context.New(),
 	}
@@ -28,13 +28,13 @@ func New(router *gin.Engine) *ClientController {
 	return c
 }
 
-func (c *ClientController) Setup() {
+func (c *CardController) Setup() {
 	c.router.POST("/api/card", c.CreateCard)
 	c.router.GET("/api/card/:id", c.GetCard)
 	c.router.GET("/api/card", c.GetCards)
 }
 
-func (c *ClientController) CreateCard(ctx *gin.Context) {
+func (c *CardController) CreateCard(ctx *gin.Context) {
 	var card model.Card
 	err := ctx.BindJSON(&card)
 	if err != nil {
@@ -64,21 +64,21 @@ func (c *ClientController) CreateCard(ctx *gin.Context) {
 	ctx.JSON(200, gin.H{"id": id})
 }
 
-func (c *ClientController) GetCard(ctx *gin.Context) {
+func (c *CardController) GetCard(ctx *gin.Context) {
 	idu, err := uuid.Parse(ctx.Param("id"))
 	if err != nil {
 		ctx.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
-	client, err := c.dbCtx.GetCard(idu)
+	card, err := c.dbCtx.GetCard(idu)
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.JSON(200, client)
+	ctx.JSON(200, card)
 }
 
-func (c *ClientController) GetCards(ctx *gin.Context) {
+func (c *CardController) GetCards(ctx *gin.Context) {
 	res, err := c.dbCtx.GetCards()
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": err.Error()})
