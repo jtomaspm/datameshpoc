@@ -1,0 +1,65 @@
+<div class="col-2">
+    <br>
+    <div class="input-group mb-3">
+        <input id="amountInp" type="text" class="form-control" placeholder="Amount" aria-label="Amount" aria-describedby="basic-addon1">
+    </div>
+    <button type="button" class="btn btn-dark" id="genBtn">Generate</button>
+</div>
+<div class="col">
+    <button type="button" class="btn btn-dark m-3" id="refreshBtn">Refresh</button>
+    <div class="row m-3" id="clientData">
+    </div>
+    <script>
+        gb = document.getElementById("genBtn");
+        gb.onclick = function() {
+            amount = document.getElementById("amountInp").value;
+            if (amount == "" || amount == null) {
+                amount = "10";
+            }
+            fetch("/api/feedClients/" + amount, {method:"POST"})
+            alert("Generated " + amount + " clients");
+            document.getElementById("amountInp").value = "";
+        }
+
+        rb = document.getElementById("refreshBtn");
+        rb.onclick = function() {
+            console.log("refreshing");
+            fetch("/api/clients")
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    let clientData = document.getElementById("clientData");
+                    clientData.innerHTML = "";
+                    clients = JSON.parse(data.clients);
+                    temp = ""
+                    temp += `
+                    <table class="table-dark">
+                        <thead>
+                            <tr>
+                            <th>Id</th>
+                            <th>FirstName</th>
+                            <th>LastName</th>
+                            <th>Email</th>
+                            <th>BirthDate</th>
+                            <th>CreationDate</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+                    //create a table with client data
+                    clients.forEach(client => {
+                        temp += `
+                            <tr>
+                            <td>${client.id}</th>
+                            <td>${client.firstName}</td>
+                            <td>${client.lastName}</td>
+                            <td>${client.email}</td>
+                            <td>${client.birthDate.slice(0, 10)}</td>
+                            <td>${(client.creationDate??"").slice(0, 10)}</td>
+                            </tr>`
+                    })
+                    temp += `</tbody></table>`;
+                    clientData.innerHTML = temp
+                });
+        }
+    </script>
+</div>
