@@ -83,6 +83,8 @@ services:
     build:
       dockerfile: dockerfile
       context: ./datafeed-process-service
+    ports:
+      - '8087:8080'
     depends_on:
       - client-system-api
       - person-system-api
