@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
 
 	"datamesh.poc/datafeed-process-service/feeder/model"
@@ -37,6 +38,8 @@ func (f *ClientFeeder) Feed(amount int) {
 			continue
 		}
 		if res.StatusCode != 200 {
+			body, err = io.ReadAll(res.Body)
+			log.Println(string(body))
 			continue
 		}
 		body, err = io.ReadAll(res.Body)
