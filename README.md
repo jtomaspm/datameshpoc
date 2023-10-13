@@ -4,6 +4,6 @@
 
  - [x] Check if personId is valid before creating client
  - [x] Enable migrations
- - [ ] Finish client-process-api
+ - [x] Finish client-process-api
  - [ ] Make client-data-feed
 

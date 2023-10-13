@@ -52,6 +52,19 @@ services:
       - client-system-api
       - person-system-api
       - log-process-api
+      - redis
+
+  card-system-api:
+    restart: always
+    build:
+      dockerfile: dockerfile
+      context: ./card-system-api
+    ports:
+      - '8085:8080'
+    depends_on:
+      - client-system-api
+      - log-process-api
+      - redis
 
   datafeed-process-service:
     restart: always
