@@ -66,6 +66,18 @@ services:
       - log-process-api
       - redis
 
+  transaction-system-api:
+    restart: always
+    build:
+      dockerfile: dockerfile
+      context: ./transaction-system-api
+    ports:
+      - '8086:8080'
+    depends_on:
+      - card-system-api
+      - log-process-api
+      - redis
+
   datafeed-process-service:
     restart: always
     build:
