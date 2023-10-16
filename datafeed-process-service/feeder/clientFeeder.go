@@ -52,6 +52,6 @@ func (f *ClientFeeder) Feed(amount int) {
 			continue
 		}
 		client.Id = m["id"]
-		f.cache[i%(len(f.cache)-1)] = client
+		f.cache[i%(len(f.cache))] = client
 	}
 }
